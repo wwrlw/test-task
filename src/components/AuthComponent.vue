@@ -1,19 +1,32 @@
 <template>
   <div class="auth">
-    <div class="auth-container">
-      <h1>Авторизация</h1>
-      <form @submit.prevent="login">
-        <div>
-          <label for="username">Логин или телефон</label>
-          <input type="text" v-model="username" />
-        </div>
-        <div>
-          <label for="password">Пароль</label>
-          <input type="password" v-model="password" />
-        </div>
-        <button type="submit">Войти</button>
-        <p v-if="error" class="error">{{ error }}</p>
-      </form>
+    <div class="auth__container">
+
+      <div class="auth__title">
+        <h3>Авторизация</h3>
+      </div>
+
+      <div class="auth__card">
+
+        <label for="username" class="auth__label">Логин или телефон</label>
+        <form @submit.prevent="login" class="auth__form">
+
+          <div class="auth__input-username">
+            <img src="@/assets/icons/16call.svg" alt="icon">
+            <input type="text" v-model="username" class="auth__username"/>
+          </div>
+
+          <div class="auth__input-password">
+            <img src="@/assets/icons/material-symbols-light_lock.svg" alt="asd">
+            <input type="password" v-model="password" placeholder="Пароль" class="auth__password"/>
+            <img src="@/assets/icons/mdi_eye-off.svg" alt="asd">
+          </div>
+
+          <button type="submit" class="auth__button">Войти</button>
+
+          <p v-if="error" class="error">{{ error }}</p>
+        </form>
+      </div>
     </div>
   </div>
 </template>
@@ -39,7 +52,9 @@ export default {
         username: this.username,
         password: this.password,
       });
-    this.$router.push('/')
+      if (this.$store.getters.isAuthenticated) {
+        this.$router.push('/');
+      }
     }
   }
 }
@@ -56,75 +71,45 @@ export default {
   justify-content: center;
   align-items: center;
 
-  &__card {
+  &__container {
     width: 340px;
     height: 290px;
-    background-color: #fff;
+    background-color: #FFFFFF;
   }
-
   &__title {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     margin: 0 auto;
+    border-radius: 3px;
+    color: #fff;
     width: 308px;
     height: 56px;
-    transform: translateY(-19px);
-    background-color: #44A248;
-    border-radius: 5px;
-  }
-
-  h3 {
-    color: #FFF;
-    font-family: Inter;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 500;
-  }
-
-  .auth__container {
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
+    background: #44A248;
+    transform: translateY(-19px);
+
   }
 
-  &__forms {
-    width: 300px;
-    height: 150px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+  &__label {
+    align-self: start;
   }
 
-  &__phone,
-  &__password {
+  &__card {
+    padding: 20px;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    border-bottom: 1px solid var(--Background-color-light, #CCC);
-    padding-bottom: 8px;
     gap: 8px;
   }
 
-  &__input {
-    border: none;
-    outline: none;
-    flex-grow: 1;
-    padding: 8px 0;
-    font-size: 14px;
+  &__form {
+
   }
 
-  &__eye {
-    cursor: pointer;
-  }
-
-  input::placeholder {
-    color: #999;
-  }
-
-  input[type="tel"]:focus,
-  input[type="password"]:focus {
-    border-bottom-color: #44A248;
+  &__input-username {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 
   &__button {
@@ -139,7 +124,7 @@ export default {
     box-shadow: 0px 4px 4px 0px rgba(106, 174, 94, 0.25);
   }
   &__button:active {
-    background-color: #2c7e34; // цвет при клике
+    background-color: #2c7e34;
   }
 
 }

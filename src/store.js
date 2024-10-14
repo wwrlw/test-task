@@ -22,26 +22,47 @@ const store = new Vuex.Store({
       LOGOUT(state) {
           state.token = null;
           localStorage.removeItem('token')
-      }
+      },
+      SET_REQUEST(state, requests) {
+        state.requests = requests;
+      },
 
     },
 
     actions: {
         async login ({commit}, credentials) {
             try {
-                const  response = axios.post('https://dev.moydomonline.ru/api/auth/login/', credentials);
+                const  response = await axios.post('https://dev.moydomonline.ru/api/auth/login/', credentials);
                 const token = response.data.key
                 axios.defaults.headers.common['Authorization'] = `Token ${token}`
                 commit('SET_TOKEN', token);
+                commit('SET_ERROR', null);
 
             } catch (error) {
                 commit('SET_ERROR', 'Invalid data')
+            }
+        },
+        async FetchData ({commit}) {
+            try {
+                const token = store.state.token || localStorage.getItem('token')
+                const response = await axios.get('https://dev.moydomonline.ru/api/appeals/v1.0/appeals/ ', {
+                    headers: {
+                        Authorization: `Token ${token}`
+                    },
+                    params: {
+                    }
+
+                });
+                commit('SET_REQUEST', response.data)
+            } catch (error) {
+                console.log(error)
             }
         }
     },
     getters: {
         isAuthenticated: state => !!state.token,
-        error: state => state.error
+        error: state => state.error,
+        requests: state => state.requests
     }
 
 })

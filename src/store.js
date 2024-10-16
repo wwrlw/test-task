@@ -26,6 +26,9 @@ const store = new Vuex.Store({
       SET_REQUEST(state, requests) {
         state.requests = requests;
       },
+      // SET_HOME(state, requests) {
+      //  state.requests = requests
+      // }
 
     },
 
@@ -42,14 +45,18 @@ const store = new Vuex.Store({
                 commit('SET_ERROR', 'Invalid data')
             }
         },
-        async FetchData ({commit}) {
+        async FetchData ({commit}, params={}) {
             try {
                 const token = store.state.token || localStorage.getItem('token')
-                const response = await axios.get('https://dev.moydomonline.ru/api/appeals/v1.0/appeals/ ', {
+                const response = await axios.get('https://dev.moydomonline.ru/api/appeals/v1.0/appeals/', {
                     headers: {
                         Authorization: `Token ${token}`
                     },
                     params: {
+                        search: params.search || '',
+                        premise_id: params.premise_id || '',
+                        page: params.page || 1,
+                        page_size: params.page_size || 10,
                     }
 
                 });
@@ -57,7 +64,22 @@ const store = new Vuex.Store({
             } catch (error) {
                 console.log(error)
             }
-        }
+        },
+        // async FetchHome({commit}) {
+        //     try {
+        //         const token = localStorage.getItem('token') || store.state.token;
+        //         const response = await axios.get('https://dev.moydomonline.ru/api/geo/v2.0/user-premises/', {
+        //             headers: {
+        //                 Authorization: `Token ${token}`
+        //             }
+        //
+        //         });
+        //         commit('SET_HOME', response.data)
+        //     } catch (e) {
+        //         console.log(e)
+        //     }
+        // }
+
     },
     getters: {
         isAuthenticated: state => !!state.token,
